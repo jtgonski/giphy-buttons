@@ -1,0 +1,13 @@
+button {
+	margin: 5px;
+}
+
+.jumbotron {
+	color: white;
+	background-color: #7F1707;
+}
+
+.giphyDiv {
+	float: left;
+	padding: 10px;
+}
