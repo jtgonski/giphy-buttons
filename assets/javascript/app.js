@@ -20,7 +20,6 @@ $(document).ready(function() {
 		"otter", 
 		"owl", 
 		"penguin", 
-		"pot-bellied pig",
 		"rabbit", 
 		"racoon", 
 		"shark", 
@@ -29,9 +28,7 @@ $(document).ready(function() {
 		"walrus", 
 		"zebra"
 		];
-	//var giphyArray = [];
-
-
+	
 	function displayAnimalGiphys() {
 		var animal = $(this).attr("data-name"); 
 		var APIkey = "dc6zaTOxFJmzC&limit=10";
@@ -83,16 +80,11 @@ $(document).ready(function() {
 
 		       	giphyDiv.prepend(giphy); 
 		       	
-		       	//push img to giphyArrayXXX SKIP THIS STEP
 		        //use a for loop to display STILL giphies to page
 	      	    $("#animal-giphys").prepend(giphyDiv);
 
 	       	} 
-
-
-        })
-
-        
+        })        
 	}
 
 	//Create click event for animal button class (document on click, or more efficient version mark mentioned in class)
@@ -100,6 +92,96 @@ $(document).ready(function() {
 	$(document).on("click", ".animal-button", displayAnimalGiphys);
 
 
+		
+	//append buttons into the animals view div
+	function renderButtons() {
+		//empty the animals view div
+		$("#animals-view").empty();
+
+		//check to see if there is an array in local storage
+		//if so, set animalsArray to equal storage Array (parse it from the stringified version);
+		if (localStorage.getItem("Animals-Array") !== null) {
+			animalsArray = JSON.parse(localStorage.getItem("Animals-Array")); 
+		}
+
+		//display buttons to the animals view div
+		for (var i = 0; i < animalsArray.length; i++) {
+
+			var button = $("<button>"); 
+
+			button.addClass("animal-button");
+			button.attr("data-name", animalsArray[i]); 
+			button.text(animalsArray[i]);
+
+			$("#animals-view").append(button); 
+		}		
+	}
+
+	renderButtons();
+
+	//create click event to add new buttons and display to screen
+	$("#submit-animal").on("click", function(event) {
+		event.preventDefault();
+
+		var newAnimal = $("#addAnimal").val().trim().toLowerCase();
+		$("#addAnimal").val("");
+		
+		if (newAnimal === "") {
+			alert("please enter an animal name")
+		}
+		else if ($.inArray(newAnimal, animalsArray) !== -1) {
+			alert("that button already exists!");
+		}
+		else {
+			animalsArray.push(newAnimal); 
+		 
+		}
+
+		animalsArray.sort();
+
+		//clear local storage
+		localStorage.clear();
+
+		//set local storage to animalsArray stringified
+		localStorage.setItem("Animals-Array", JSON.stringify(animalsArray));
+
+		renderButtons();
+
+		
+	});	
+
+	//click event to remove the last button
+	$("#remove-last-button").on("click", function(event) {
+		event.preventDefault();
+
+		var removeAnimal = $("#addAnimal").val().trim().toLowerCase();
+		$("#addAnimal").val("");
+
+		if (removeAnimal === "") {
+			alert("Please enter which animal you would like removed"); 
+		}
+		else if ($.inArray(removeAnimal, animalsArray) === -1) {
+			alert("That animal is not listed"); 
+		}
+		else {
+			animalsArray.splice(animalsArray.indexOf(removeAnimal), 1);
+		}
+
+		//clear local storage
+		localStorage.clear();
+
+		//set local storage to animalsArray stringified
+		localStorage.setItem("Animals-Array", JSON.stringify(animalsArray));
+
+		renderButtons();
+	})
+
+	//click event to restore original buttons 
+	$("#restore-buttons").on("click", function(event) {
+		event.preventDefault(); 
+		localStorage.clear(); 
+		location.reload();
+	})
 
 
 	//create an a click event for giphy class 
@@ -147,60 +229,6 @@ $(document).ready(function() {
 			$(this).attr("data-state", "still"); 
 		}
 
-	})
-
-
-		
-	//append buttons into the animals view div
-	function renderButtons() {
-
-		$("#animals-view").empty();
-
-		for (var i = 0; i < animalsArray.length; i++) {
-
-			var button = $("<button>"); 
-
-			button.addClass("animal-button");
-			button.attr("data-name", animalsArray[i]); 
-			button.text(animalsArray[i]);
-
-			$("#animals-view").append(button); 
-		}
-		
-	}
-
-	renderButtons();
-
-	//create click even to add new buttons and display to screen
-	$("#submit-animal").on("click", function(event) {
-		event.preventDefault();
-
-		var newAnimal = $("#addAnimal").val().trim().toLowerCase();
-		console.log(newAnimal);
-		
-		if (newAnimal === "") {
-			alert("please enter an animal name")
-		}
-		else if ($.inArray(newAnimal, animalsArray) !== -1) {
-			alert("that button already exists!");
-		}
-		else {
-			animalsArray.push(newAnimal); 
-		 
-			renderButtons();
-		}
-
-		$("#addAnimal").val(null);
-		
-	});	
-
-	//click event to remove the last button
-	$("#remove-last-button").on("click", function(event) {
-		event.preventDefault();
-
-		animalsArray.pop();
-
-		renderButtons();
 	})
 
 
