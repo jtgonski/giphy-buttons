@@ -19,7 +19,7 @@ $(document).ready(function() {
 		"narwhal", 
 		"otter", 
 		"owl", 
-		"penquin", 
+		"penguin", 
 		"pot-bellied pig",
 		"rabbit", 
 		"racoon", 
@@ -54,6 +54,11 @@ $(document).ready(function() {
 	       	for (var i = 0; i < results.length; i++) {
 	       		var giphyDiv = $("<div>"); 
 	       		giphyDiv.addClass("giphyDiv");
+
+	       		//get rating 
+	       		var rating = results[i].rating;
+
+	       		var ratingDiv = $("<p>");
 		  
 		       	//create img tag to hold giphy
 		       	var giphy = $("<img>")
@@ -73,11 +78,15 @@ $(document).ready(function() {
 		       	//assign class giphy to each
 		       	giphy.addClass("giphy");
 
+		       	ratingDiv.prepend("GIPHY rating: " + rating);
+		       	giphyDiv.prepend(ratingDiv);
+
 		       	giphyDiv.prepend(giphy); 
 		       	
 		       	//push img to giphyArrayXXX SKIP THIS STEP
 		        //use a for loop to display STILL giphies to page
 	      	    $("#animal-giphys").prepend(giphyDiv);
+
 	       	} 
 
 
@@ -139,8 +148,10 @@ $(document).ready(function() {
 		}
 
 	})
-		
 
+
+		
+	//append buttons into the animals view div
 	function renderButtons() {
 
 		$("#animals-view").empty();
@@ -155,31 +166,42 @@ $(document).ready(function() {
 
 			$("#animals-view").append(button); 
 		}
+		
 	}
 
 	renderButtons();
 
-
+	//create click even to add new buttons and display to screen
 	$("#submit-animal").on("click", function(event) {
 		event.preventDefault();
 
-		var newAnimal = $("#addAnimal").val().trim(); 
+		var newAnimal = $("#addAnimal").val().trim().toLowerCase();
+		console.log(newAnimal);
 		
-		animalsArray.push(newAnimal); 
+		if (newAnimal === "") {
+			alert("please enter an animal name")
+		}
+		else if ($.inArray(newAnimal, animalsArray) !== -1) {
+			alert("that button already exists!");
+		}
+		else {
+			animalsArray.push(newAnimal); 
 		 
-		renderButtons();
+			renderButtons();
+		}
 
 		$("#addAnimal").val(null);
 		
 	});	
 
+	//click event to remove the last button
+	$("#remove-last-button").on("click", function(event) {
+		event.preventDefault();
 
+		animalsArray.pop();
 
-
-
-
-
-
+		renderButtons();
+	})
 
 
 
